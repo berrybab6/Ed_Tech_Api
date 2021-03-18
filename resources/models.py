@@ -21,7 +21,7 @@ class Resources(models.Model):
     MECHANICAL = 2
     CIVIL = 3
     CHEMICAL = 4
-    ELECTRICAL =5
+    ELECTRICAL = 5
     IT = 6
     OTHER = 8
     BIOMED = 7
@@ -39,3 +39,4 @@ class Resources(models.Model):
     name = models.CharField(max_length=255, null=True, blank=True)
     category = models.PositiveSmallIntegerField(choices=CATEGORY, default=8)
     resource_file = models.FileField(null=True, blank=True, default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
