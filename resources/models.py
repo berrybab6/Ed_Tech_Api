@@ -7,13 +7,14 @@ class Resources(models.Model):
     TUTORIALS = 3
     BOOKS = 4
     LECTURES = 5
-
+    OTHER_TYPE = 6
     RESOURCE_TYPES = (
         (EXAMS, 'exams'),
         (BOOKS, 'books'),
         (LECTURES, 'lectures'),
         (TUTORIALS, 'tutorials'),
         (ASSIGNMENT, 'assignment'),
+        (OTHER_TYPE, 'other')
     )
 
     SOFTWARE = 1
@@ -22,6 +23,7 @@ class Resources(models.Model):
     CHEMICAL = 4
     ELECTRICAL =5
     IT = 6
+    OTHER = 8
     BIOMED = 7
     CATEGORY = (
         (SOFTWARE, "software"),
@@ -31,7 +33,9 @@ class Resources(models.Model):
         (ELECTRICAL, "electrical"),
         (IT, "it"),
         (BIOMED, "biomed"),
+        (OTHER, "other")
     )
-    resource_type = models.PositiveSmallIntegerField(choices=RESOURCE_TYPES)
+    resource_type = models.PositiveSmallIntegerField(choices=RESOURCE_TYPES, default=6)
     name = models.CharField(max_length=255, null=True, blank=True)
-    category = models.PositiveSmallIntegerField(choices=CATEGORY)
+    category = models.PositiveSmallIntegerField(choices=CATEGORY, default=8)
+    resource_file = models.FileField(null=True, blank=True, default=False)
