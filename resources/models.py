@@ -20,7 +20,7 @@ class Resources(models.Model):
     MECHANICAL = 2
     CIVIL = 3
     CHEMICAL = 4
-    ELECTRICAL =5 
+    ELECTRICAL =5
     IT = 6
     BIOMED = 7
     CATEGORY = (
@@ -30,7 +30,7 @@ class Resources(models.Model):
         (CHEMICAL, "chemical"),
         (ELECTRICAL, "electrical"),
         (IT, "it"),
-        (BIOMED, "biomed")
+        (BIOMED, "biomed"),
     )
     resource_type = models.PositiveSmallIntegerField(choices=RESOURCE_TYPES)
     name = models.CharField(max_length=255, null=True, blank=True)

@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Student.apps.StudentConfig',
     "users.apps.UsersConfig",
-    "resources.apps.ResourcesConfig"
+    "resources.apps.ResourcesConfig",
+    "todo.apps.TodoConfig"
 ]
 
 MIDDLEWARE = [
