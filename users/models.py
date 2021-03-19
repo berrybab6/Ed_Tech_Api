@@ -23,7 +23,7 @@ class Role(models.Model):
         return self.get_id_display()
 class UserManager(BaseUserManager):
 
-    def create_user(self, email, full_name=None, gender=None, reset_link=None, is_staff=False, password=None, department=None, batch=None, is_active=True, is_student=True, is_admin=False, is_teacher=False):
+    def create_user(self, email, username, full_name=None, gender=None, reset_link=None, is_staff=False, password=None, department=None, batch=None, is_active=True, is_student=True, is_admin=False, is_teacher=False):
         if not email:
             raise ValueError("User Must have an email address")
         if not password:
@@ -36,6 +36,7 @@ class UserManager(BaseUserManager):
         user.gender = gender
         user.department = department
         user.batch = batch
+        user.username = username
         user.profile_url = ""
         user.reset_link = reset_link
         user.full_name = full_name
@@ -44,15 +45,15 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, full_name=None, password=None):
+    def create_superuser(self, email, username,full_name=None, password=None):
 
-        user = self.create_user(email, full_name=full_name, password=password, is_staff=True, is_admin=True)
+        user = self.create_user(email, username, full_name=full_name, password=password, is_staff=True, is_admin=True)
         return user
-    def create_staffuser(self, email, full_name=None, password=None):
-        user = self.create_user(email, full_name=full_name, password=password, is_staff=True, is_student=False)
+    def create_staffuser(self, email, username, full_name=None, password=None):
+        user = self.create_user(email, username, full_name=full_name, password=password, is_staff=True, is_student=False)
         return user
-    def create_teacher(self, email, full_name=None, gender=None, department=None, reset_link=None, password=None):
-        user = self.create_user(email, full_name=full_name, gender=gender, reset_link=reset_link, password=password, department=department, is_teacher=True, is_student=False)
+    def create_teacher(self, email, username, full_name=None, gender=None, department=None, reset_link=None, password=None):
+        user = self.create_user(email, username, full_name=full_name, gender=gender, reset_link=reset_link, password=password, department=department, is_teacher=True, is_student=False)
         return user
 class User(AbstractUser):
     # roles = models.OneToOneField(Role, on_delete=models.CASCADE, null=True)
