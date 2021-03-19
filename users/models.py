@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 # Create your models here.
-class Roles(models.Model):
+
+class Role(models.Model):
 
     STUDENT = 1
     TEACHER = 2
@@ -45,7 +46,7 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, email, full_name=None, password=None):
 
-        user = self.create_user(email, full_name=full_name, password=password, is_student=False, is_staff=True, is_admin=True)
+        user = self.create_user(email, full_name=full_name, password=password, is_staff=True, is_admin=True)
         return user
     def create_staffuser(self, email, full_name=None, password=None):
         user = self.create_user(email, full_name=full_name, password=password, is_staff=True, is_student=False)
@@ -54,12 +55,12 @@ class UserManager(BaseUserManager):
         user = self.create_user(email, full_name=full_name, gender=gender, reset_link=reset_link, password=password, department=department, is_teacher=True, is_student=False)
         return user
 class User(AbstractUser):
-    roles = models.OneToOneField(Roles, on_delete=models.CASCADE, null=True)
+    # roles = models.OneToOneField(Role, on_delete=models.CASCADE, null=True)
     email = models.CharField(unique=True, max_length=255, default=False)
     full_name = models.CharField(max_length=255, blank=True, null=True)
-    gender = models.CharField(max_length=120, null=True)
+    gender = models.CharField(max_length=120, null=True, blank=True)
     profile_url = models.ImageField(default=False, null=True, blank=True)
-    reset_link = models.CharField(max_length=255, null=True)
+    reset_link = models.CharField(max_length=255, null=True, blank=True)
     active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
