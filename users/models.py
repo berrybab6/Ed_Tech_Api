@@ -1,6 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.conf import settings
+from rest_framework.authtoken.models import Token
+
 # Create your models here.
 
 class Role(models.Model):
@@ -23,7 +28,7 @@ class Role(models.Model):
         return self.get_id_display()
 class UserManager(BaseUserManager):
 
-    def create_user(self, email, username, full_name=None, gender=None, reset_link=None, is_staff=False, password=None, department=None, batch=None, is_active=True, is_student=True, is_admin=False, is_teacher=False):
+    def create_user(self, email, username=None, full_name=None, gender=None, reset_link=None, is_staff=False, password=None, department=None, batch=None, is_active=True, is_student=False, is_admin=False, is_teacher=False):
         if not email:
             raise ValueError("User Must have an email address")
         if not password:
@@ -45,11 +50,11 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, username,full_name=None, password=None):
+    def create_superuser(self, email, username=None,full_name=None, password=None):
 
         user = self.create_user(email, username, full_name=full_name, password=password, is_staff=True, is_admin=True)
         return user
-    def create_staffuser(self, email, username, full_name=None, password=None):
+    def create_staffuser(self, email, username=None, full_name=None, password=None):
         user = self.create_user(email, username, full_name=full_name, password=password, is_staff=True, is_student=False)
         return user
     def create_teacher(self, email, username, full_name=None, gender=None, department=None, reset_link=None, password=None):
@@ -71,7 +76,7 @@ class User(AbstractUser):
     department = models.CharField(null=True, blank=True, max_length=255)
     batch = models.CharField(null=True, blank=True, max_length=255)
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username']
 
     objects = UserManager()
     def __str__(self):
@@ -96,3 +101,8 @@ class User(AbstractUser):
     @property
     def is_admin(self):
         return self.admin
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)

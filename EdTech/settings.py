@@ -40,11 +40,23 @@ INSTALLED_APPS = [
     'Student.apps.StudentConfig',
     "users.apps.UsersConfig",
     "resources.apps.ResourcesConfig",
-    "todo.apps.TodoConfig"
+    "todo.apps.TodoConfig",
+    'rest_framework',
+    'rest_framework.authtoken'
+
 ]
 
 AUTH_USER_MODEL = 'users.User'
 
+REST_FRAMEWORK = {
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # 'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -83,7 +95,7 @@ WSGI_APPLICATION = 'EdTech.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "EdTech",
+        'NAME': "ResourceHub",
         'USER': "postgres",
         'PASSWORD':'berrybab0764',
         'HOST':'localhost'
