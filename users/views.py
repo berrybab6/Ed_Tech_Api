@@ -2,17 +2,82 @@ from django.shortcuts import render
 from rest_framework import generics, permissions, status
 from django.http import JsonResponse
 from .models import User
+from django.contrib.auth.hashers import make_password,check_password
+
 from .serializers import UserSerializers
 from django.contrib.auth import login, logout, authenticate
 
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 
+from wsgiref.util import FileWrapper
+from .custom_renderers import JPEGRenderer, PNGRenderer
+from rest_framework import generics
+
+from rest_framework.response import Response
+from rest_framework import viewsets
+from rest_framework import renderers
+from rest_framework.decorators import api_view
+from rest_framework.views import APIView
+from rest_framework.decorators import renderer_classes, api_view
+from rest_framework.renderers import StaticHTMLRenderer
+from django.http import HttpResponse
+from PIL import Image
+
+
+class ImageAPIView(generics.RetrieveAPIView):
+
+    queryset = User.objects.all()
+    renderer_classes = [JPEGRenderer]
+
+    def get(self, request, pk):
+        # renderer_classes = [JPEGRenderer]
+        queryset = User.objects.get(username=pk).profile_url
+        data = queryset
+        return Response(data, content_type='image/jpg')
+
+
+class ImageRelated(generics.GenericAPIView):
+    serializer_class = UserSerializers
+    queryset = User.objects.all()
+    permission_classes = [permissions.AllowAny, ]
+
+    def get(self,request):
+        user = User.objects.get(id=7)
+        if user:
+            picture = user.profile_url
+            return JsonResponse(picture, safe=False)
+
+
 # Create your views here.
+class ChangePassword(generics.GenericAPIView):
+    serializer_class = UserSerializers
+    queryset = User.objects.all()
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    """Change Password
+    """
+    def put(self, request):
+        user = User.objects.get(id=request.user.id)
+        if user:
+            oldpass = request.data.get("password","")
+            newpass = request.data.get('newpassword',"")
+
+            if oldpass and newpass:
+                password = user.password
+                if check_password(oldpass, password):
+                    user.set_password(newpass)
+                    user.save()
+                    return JsonResponse({"message":"Password Changed Succesfully"}, status=status.HTTP_201_CREATED)
+            else:
+                return JsonResponse({"message":"password and new password fields required"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return JsonResponse({"message":"user Doesnot Found"}, status=status.HTTP_404_NOT_FOUND)
 class UserCreateView(generics.GenericAPIView):
     serializer_class = UserSerializers
     queryset = User.objects.all()
     permission_classes = [permissions.IsAuthenticated, ]
+
 
     def post(self, request):
         if request.user.admin:
@@ -35,9 +100,9 @@ class UserCreateView(generics.GenericAPIView):
                                                 is_teacher=teacher)
 
                 ser = UserSerializers(user)
-                return JsonResponse(ser.data, safe=False)
+                # return JsonResponse(ser.data, safe=False)
 
-                # return JsonResponse(){"user":ser.data, "is_teacher":user.is_teacher})
+                return JsonResponse({"user":ser.data, "is_teacher":user.is_teacher})
             else:
                 return JsonResponse({"error":"Please choose one role"})
         else:
@@ -74,6 +139,8 @@ class LoginUserView(ObtainAuthToken):
 
                 ser = UserSerializers(user)
                 # return JsonResponse({"message":"user logged in succesfully", "user":ser.data})
+
+                # return JsonResponse(ser.data, safe=False)
                 return JsonResponse({"user":ser.data, "token":token.key}, status=status.HTTP_201_CREATED)
 
             return JsonResponse({"error":"disabled account"}, status=status.HTTP_404_NOT_FOUND)
@@ -83,7 +150,7 @@ class LoginUserView(ObtainAuthToken):
 class UserDetailView(generics.GenericAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializers
-    permission_classes = [permissions.IsAuthenticated, ]
+    permission_classes = [permissions.AllowAny, ]
     def get(self, request):
         user = User.objects.get(id=request.user.id)
         if user:
@@ -92,10 +159,11 @@ class UserDetailView(generics.GenericAPIView):
         else:
             return JsonResponse({"error":"User Doesnot exist"}, status=status.HTTP_404_NOT_FOUND)
     def put(self, request):
-        user = User.objects.get(id=request.user.id)
+        user = User.objects.get(id=7)
         if user:
             username = request.data.get('username', user.username)
             userprofile = request.data.get('profile_url', user.profile_url)
+
             full_name = request.data.get('full_name', user.full_name)
             user.username = username
             user.profile_url = userprofile
@@ -141,3 +209,4 @@ class UserRoleView(generics.GenericAPIView):
                 return JsonResponse({"error":"There is no User with this role"})
         else:
             return JsonResponse({"error":"Admin Only"}, status=status.HTTP_401_UNAUTHORIZED)
+

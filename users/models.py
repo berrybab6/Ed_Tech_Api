@@ -8,6 +8,11 @@ from rest_framework.authtoken.models import Token
 
 # Create your models here.
 
+
+
+def user_directory_path(instance, filename):
+    return '{0}/'.format(filename)
+
 class Role(models.Model):
 
     STUDENT = 1
@@ -28,7 +33,7 @@ class Role(models.Model):
         return self.get_id_display()
 class UserManager(BaseUserManager):
 
-    def create_user(self, email, username=None, full_name=None, gender=None, reset_link=None, is_staff=False, password=None, department=None, batch=None, is_active=True, is_student=False, is_admin=False, is_teacher=False):
+    def create_user(self, email, username=None, full_name=None, gender=None, profile_url=None, reset_link=None, is_staff=False, password=None, department=None, batch=None, is_active=True, is_student=False, is_admin=False, is_teacher=False):
         if not email:
             raise ValueError("User Must have an email address")
         if not password:
@@ -41,8 +46,9 @@ class UserManager(BaseUserManager):
         user.gender = gender
         user.department = department
         user.batch = batch
+        user.profile_url =profile_url
         user.username = username
-        user.profile_url = ""
+        
         user.reset_link = reset_link
         user.full_name = full_name
         user.admin = is_admin
@@ -65,7 +71,7 @@ class User(AbstractUser):
     email = models.CharField(unique=True, max_length=255, default=False)
     full_name = models.CharField(max_length=255, blank=True, null=True)
     gender = models.CharField(max_length=120, null=True, blank=True)
-    profile_url = models.ImageField(default=False, null=True, blank=True)
+    profile_url = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
     reset_link = models.CharField(max_length=255, null=True, blank=True)
     active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False)
