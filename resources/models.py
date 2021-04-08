@@ -1,6 +1,10 @@
 from django.db import models
+from django.conf import settings
 
 # Create your models here.
+
+def resource_directory_path(instance, filename):
+    return 'resources/{0}/'.format(filename)
 class Resources(models.Model):
     EXAMS = 1
     ASSIGNMENT = 2
@@ -37,6 +41,8 @@ class Resources(models.Model):
     )
     resource_type = models.PositiveSmallIntegerField(choices=RESOURCE_TYPES, default=6)
     name = models.CharField(max_length=255, null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,related_name="resources" ,default=False, on_delete=models.CASCADE, null=True)
     category = models.PositiveSmallIntegerField(choices=CATEGORY, default=8)
-    resource_file = models.FileField(null=True, blank=True, default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(null=True, blank=True, max_length=255)
+    resource_file = models.FileField(upload_to=resource_directory_path, null=True, blank=True, default=False)
+    created_at = models.DateTimeField(auto_now=True)

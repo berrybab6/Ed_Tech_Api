@@ -11,19 +11,11 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 
 from wsgiref.util import FileWrapper
-from .custom_renderers import JPEGRenderer, PNGRenderer
+from .custom_renderers import JPEGRenderer
+# , PNGRenderer
 from rest_framework import generics
 
 from rest_framework.response import Response
-from rest_framework import viewsets
-from rest_framework import renderers
-from rest_framework.decorators import api_view
-from rest_framework.views import APIView
-from rest_framework.decorators import renderer_classes, api_view
-from rest_framework.renderers import StaticHTMLRenderer
-from django.http import HttpResponse
-from PIL import Image
-
 
 class ImageAPIView(generics.RetrieveAPIView):
 
