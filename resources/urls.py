@@ -7,7 +7,8 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.CreateResourceView.as_view())
+    path('', views.CreateResourceView.as_view()),
+    path("files/", views.DisplayResourceFile.as_view())
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
