@@ -5,6 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.conf import settings
 from rest_framework.authtoken.models import Token
+from comment.models import Comment
 
 # Create your models here.
 
@@ -81,6 +82,7 @@ class User(AbstractUser):
     timestamp = models.DateTimeField(auto_now_add=True)
     department = models.CharField(null=True, blank=True, max_length=255)
     batch = models.CharField(null=True, blank=True, max_length=255)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="user", default=None, null=True, blank=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
