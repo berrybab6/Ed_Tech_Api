@@ -24,7 +24,7 @@ class ImageAPIView(generics.RetrieveAPIView):
 
     def get(self, request, pk):
         # renderer_classes = [JPEGRenderer]
-        queryset = User.objects.get(username=pk).profile_url
+        queryset = User.objects.get(email=pk).profile_url
         data = queryset
         return Response(data, content_type='image/jpg')
 
@@ -41,6 +41,44 @@ class ImageRelated(generics.GenericAPIView):
             return JsonResponse(picture, safe=False)
 
 
+
+# # Create your views here.
+# class ChangePassword(generics.GenericAPIView):
+#     serializer_class = UserSerializers
+#     queryset = User.objects.all()
+#     # permission_classes = [permissions.IsAuthenticated, ]
+#     permission_classes = [permissions.AllowAny, ]
+
+
+#     """Change Password
+#     """
+#     def put(self, request):
+#         # user = User.objects.get(email=t.user.id)
+#         # if user:
+
+#         # oldpass = request.data.get("password","")
+#         newpass = request.data.get('newpassword',"")
+#         email = request.data.get('email',"")
+
+#         user = User.objects.get(email=email)
+
+#         # if oldpass and newpass:
+#             # password = user.password
+#             # if check_password(oldpass, password):
+#         user.set_password(newpass)
+#         user.save()
+#         return JsonResponse({"message":"Password Changed Succesfully"}, status=status.HTTP_201_CREATED)
+#         # else:
+#         #     return JsonResponse({"message":"password and new password fields required"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+#         # else:
+#         #     return JsonResponse({"message":"user Doesnot Found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+
+
 # Create your views here.
 class ChangePassword(generics.GenericAPIView):
     serializer_class = UserSerializers
@@ -52,17 +90,20 @@ class ChangePassword(generics.GenericAPIView):
     def put(self, request):
         user = User.objects.get(id=request.user.id)
         if user:
-            oldpass = request.data.get("password","")
-            newpass = request.data.get('newpassword',"")
 
-            if oldpass and newpass:
-                password = user.password
-                if check_password(oldpass, password):
-                    user.set_password(newpass)
-                    user.save()
-                    return JsonResponse({"message":"Password Changed Succesfully"}, status=status.HTTP_201_CREATED)
-            else:
-                return JsonResponse({"message":"password and new password fields required"}, status=status.HTTP_400_BAD_REQUEST)
+                oldpass = request.data.get("password","")
+                newpass = request.data.get('newpassword',"")
+
+                if oldpass and newpass:
+                    password = user.password
+                    if check_password(oldpass, password):
+                        user.set_password(newpass)
+                        user.save()
+                        return JsonResponse({"message":"Password Changed Succesfully"}, status=status.HTTP_201_CREATED)
+                else:
+                    return JsonResponse({"message":"password and new password fields required"}, status=status.HTTP_400_BAD_REQUEST)
+
+
         else:
             return JsonResponse({"message":"user Doesnot Found"}, status=status.HTTP_404_NOT_FOUND)
 class UserCreateView(generics.GenericAPIView):
@@ -151,7 +192,7 @@ class UserDetailView(generics.GenericAPIView):
         else:
             return JsonResponse({"error":"User Doesnot exist"}, status=status.HTTP_404_NOT_FOUND)
     def put(self, request):
-        user = User.objects.get(id=7)
+        user = User.objects.get(id=15)
         if user:
             username = request.data.get('username', user.username)
             userprofile = request.data.get('profile_url', user.profile_url)
@@ -169,7 +210,7 @@ class UserDetailView(generics.GenericAPIView):
         else:
             return JsonResponse({"error":"User doesnot exist"})
     def delete(self, request):
-        user = User.objects.get(id=request.user.id)
+        user = User.objects.get(id=20)
         if user:
             user.delete()
             return JsonResponse({"success":"User Deleted Succesfully"}, status=status.HTTP_204_NO_CONTENT)

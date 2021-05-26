@@ -25,7 +25,10 @@ SECRET_KEY = 'p!jl%g8_2f2&drcca@e5%32!0pz^6@ax(xx%j9k8!n0qq2+-t@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '10.5.211.42','10.5.241.173' ,'127.0.0.1', '10.6.201.28', '10.5.226.205', '10.5.242.177']
+
+        # 'http://siteyouwantto.allow.com',
+    # ]
+# Access-Control-Allow-Origin:*
 
 
 # Application definition
@@ -39,9 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Student.apps.StudentConfig',
     "users.apps.UsersConfig",
+    "comment.apps.CommentConfig",
     "resources.apps.ResourcesConfig",
+    'courses.apps.CoursesConfig',
     "todo.apps.TodoConfig",
     'rest_framework',
+    'corsheaders',
     'rest_framework.authtoken'
 
 ]
@@ -62,11 +68,24 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+ALLOWED_HOSTS = ['*']
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+  'http://localhost:3000',
+)
+# CORS_ALLOW_ALL_ORIGINS=True
+# CORS_ALLOWED_ORIGINS = [
+#         'http://127.0.0.1:3000',
+#         'http://localhost:3000',
+# ]
+# CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:3000','http://localhost:3000']
 
 ROOT_URLCONF = 'EdTech.urls'
 
@@ -147,3 +166,5 @@ MEDIA_URL = '/uploads/'
 # ]
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
