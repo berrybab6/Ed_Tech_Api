@@ -82,7 +82,7 @@ class User(AbstractUser):
     timestamp = models.DateTimeField(auto_now_add=True)
     department = models.CharField(null=True, blank=True, max_length=255)
     batch = models.CharField(null=True, blank=True, max_length=255)
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="user", default=None, null=True, blank=True)
+    # comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="user", default=None, null=True, blank=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
